@@ -2,8 +2,8 @@ name: Get ProjectV2 ID
 description: This action outputs the ProjectV2 ID using the Project number and Organization login name
 
 inputs:
-  pat_token:
-    description: GitHub PAT token
+  token:
+    description: GitHub Token
     required: true
   organization:
     description: Organization login name
@@ -23,7 +23,7 @@ runs:
     - id: execution
       uses: actions/github-script@v7
       with:
-        github-token: ${{ inputs.pat_token }}
+        github-token: ${{ inputs.token }}
         script: |
           const org = "${{ inputs.organization }}";
           const p_number = ${{ inputs.project_number }};
