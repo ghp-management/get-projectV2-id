@@ -4,7 +4,7 @@
 
 # get-projectV2-id
 
-This action actually outputs the ProjectV2 long format ID starting from the organization login name and project number.
+This action actually outputs the ProjectV2 long format ID starting from the organization/ user login name and project number.
 
 ## Usage
 
@@ -12,11 +12,14 @@ In order to use this action you need to provide a valid token with Project r/w p
 
 ### Inputs
 
-| name           | value  | default | description                                   |
-|----------------|--------|---------|-----------------------------------------------|
-| token          | string | ''      | Github valid Token for Project                |
-| organization   | string | ''      | Organization login name                       |
-| project_number | number |         | ProjectV2 Number (took from Project URL path) |
+| name           | value  | default | required | description                                   |
+|----------------|--------|---------|----------|-----------------------------------------------|
+| token          | string | ''      | t        | Github valid Token for Project                |
+| organization   | string | ''      |          | Organization login name                       |
+| user           | string | ''      |          | User login name                               |
+| project_number | number |         | t        | ProjectV2 Number (took from Project URL path) |
+
+At least `organization` or `user` login name is required.
 
 ### Outputs
 

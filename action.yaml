@@ -7,7 +7,8 @@ inputs:
     required: true
   organization:
     description: Organization login name
-    required: true
+  user:
+    description: User login name
   project_number:
     description: ProjectV2 Number
     required: true
@@ -26,17 +27,36 @@ runs:
         github-token: ${{ inputs.token }}
         script: |
           const org = "${{ inputs.organization }}";
+          const user = "${{ inputs.user }}";
+
+          if (!org && !user) {
+            core.setFailed("Organization or User login name is required")
+          }
+
           const p_number = ${{ inputs.project_number }};
 
-          const query = `
-            query {
-              organization(login: "${org}") {
-                projectV2(number: ${p_number}) {
-                  id
+          let query;
+          if (org) {
+            query = `
+              query {
+                organization(login: "${org}") {
+                  projectV2(number: ${p_number}) {
+                    id
+                  }
                 }
               }
-            }
-          `;
+            `;
+          } else {
+            query = `
+              query {
+                user(login: "${user}") {
+                  projectV2(number: ${p_number}) {
+                    id
+                  }
+                }
+              }
+            `;
+          }
 
           const res = await github.graphql(query);
           const project_id = res.organization.projectV2?.id;
