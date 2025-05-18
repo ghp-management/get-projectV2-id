@@ -1,6 +1,10 @@
 name: Get ProjectV2 ID
 description: This action outputs the ProjectV2 ID using the Project number and Organization login name
 
+branding:
+  icon: 'check-square'
+  color: 'purple'
+
 inputs:
   token:
     description: GitHub Token
