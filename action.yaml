@@ -1,5 +1,8 @@
 name: Get ProjectV2 ID
-description: This action outputs the ProjectV2 ID using the Project number and Organization login name
+description:
+  This action outputs the ProjectV2 ID using the Project number and Organization
+  login name
+author: Claudio Maradonna
 
 branding:
   icon: 'check-square'
@@ -9,10 +12,12 @@ inputs:
   token:
     description: GitHub Token
     required: true
-  organization:
-    description: Organization login name
-  user:
-    description: User login name
+  owner:
+    description: Owner login name
+    required: true
+  owner_typology:
+    description: Must be one of [ `organization`, `user` ]
+    required: true
   project_number:
     description: ProjectV2 Number
     required: true
@@ -20,54 +25,7 @@ inputs:
 outputs:
   project_id:
     description: The ProjectV2 ID in long format
-    value: "${{ steps.execution.outputs.project_id }}"
 
 runs:
-  using: "composite"
-  steps:
-    - id: execution
-      uses: actions/github-script@v7
-      with:
-        github-token: ${{ inputs.token }}
-        script: |
-          const org = "${{ inputs.organization }}";
-          const user = "${{ inputs.user }}";
-
-          if (!org && !user) {
-            core.setFailed("Organization or User login name is required")
-          }
-
-          const p_number = ${{ inputs.project_number }};
-
-          let query;
-          if (org) {
-            query = `
-              query {
-                organization(login: "${org}") {
-                  projectV2(number: ${p_number}) {
-                    id
-                  }
-                }
-              }
-            `;
-          } else {
-            query = `
-              query {
-                user(login: "${user}") {
-                  projectV2(number: ${p_number}) {
-                    id
-                  }
-                }
-              }
-            `;
-          }
-
-          const res = await github.graphql(query);
-          const project_id = res.organization.projectV2?.id;
-
-          if (!project_id) {
-            core.setFailed("Project not found for organization: " + org + ", project number: " + p_number);
-          }
-
-          console.log("Project ID Found:", project_id);
-          core.setOutput("project_id", project_id);
+  using: node20
+  main: dist/index.js
